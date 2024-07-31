@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guest List</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>Guest List</h1>
+    <table id="guestTable">
+        <thead>
+            <tr>
+                <th>Guest ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone Number</th>
+                <th>Address</th>
+                <th>Nationality</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Data will be inserted here -->
+        </tbody>
+    </table>
+    <script>
+        async function fetchGuestData() {
+            try {
+                console.log('Fetching guest data...');
+                const response = await fetch('http://localhost:8080/guest/getAllGuest');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const guests = await response.json();
+                console.log('Guest data received:', guests);
+                const tableBody = document.querySelector('#guestTable tbody');
+                tableBody.innerHTML = ''; // Clear any existing rows
+                
+                guests.forEach(guest => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${guest.guest_id}</td>
+                        <td>${guest.name}</td>
+                        <td>${guest.email}</td>
+                        <td>${guest.phone_number}</td>
+                        <td>${guest.address}</td>
+                        <td>${guest.nationality}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('There was a problem with the fetch operation:', error);
+            }
+        }
+
+        window.onload = fetchGuestData;
+    </script>
+</body>
+</html>
